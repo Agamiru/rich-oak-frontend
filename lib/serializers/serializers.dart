@@ -100,11 +100,12 @@ class UserSerializer {
     // Http data
     Map httpBody = toMap(exclude: exclude);
     Uri url;
-    if (foundation.kDebugMode) {
-      url = Uri.parse("${settings.LOCAL_HOST}/user/");
-    } else {
-      url = Uri.parse(userEndpoint);
-    }
+    // if (foundation.kDebugMode) {
+    //   url = Uri.parse("${settings.LOCAL_HOST}/user/");
+    // } else {
+    //   url = Uri.parse(userEndpoint);
+    // }
+    url = Uri.parse(userEndpoint);
     Map<String, dynamic>? respBody;
     // Make Request
     try {
@@ -186,11 +187,12 @@ class SignUpSerializer {
     // Http data
     Map httpBody = toMap(exclude: exclude);
     Uri url;
-    if (foundation.kDebugMode) {
-      url = Uri.parse("${settings.LOCAL_HOST}/user/");
-    } else {
-      url = Uri.parse(signUpEndpoint);
-    }
+    // if (foundation.kDebugMode) {
+    //   url = Uri.parse("${settings.LOCAL_HOST}/user/");
+    // } else {
+    //   url = Uri.parse(signUpEndpoint);
+    // }
+    url = Uri.parse(signUpEndpoint);
     Map<String, dynamic>? respBody;
     // Make Request
     try {
@@ -255,11 +257,12 @@ class SignInSerializer {
     // Http data
     Map httpBody = toMap();
     Uri url;
-    if (foundation.kDebugMode) {
-      url = Uri.parse("${settings.LOCAL_HOST}/api/token/");
-    } else {
-      url = Uri.parse(signInEndpoint);
-    }
+    // if (foundation.kDebugMode) {
+    //   url = Uri.parse("${settings.LOCAL_HOST}/api/token/");
+    // } else {
+    //   url = Uri.parse(signInEndpoint);
+    // }
+    url = Uri.parse(signInEndpoint);
     Map<String, dynamic>? respBody;
     // Make Request
     try {
