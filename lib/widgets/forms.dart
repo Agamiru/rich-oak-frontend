@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
 import 'package:rich_oak_fintech/utils/utils.dart' as utils;
-import 'package:email_validator/email_validator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rich_oak_fintech/serializers/serializers.dart';
+import 'package:rich_oak_fintech/widgets/status_widget.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  bool submit = false;
+  bool submitError = false;
   bool obscureTextPassword = true;
   bool obscureTextConfPassword = true;
 
@@ -24,13 +25,20 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Container(
-        // padding: EdgeInsets.only(top: 100),
+        padding: EdgeInsets.only(
+          top: 10,
+          left: screenSize.width * 0.25,
+          right: screenSize.width * 0.25,
+        ),
         child: Align(
       alignment: Alignment.topCenter,
       child: Container(
-        padding: EdgeInsets.only(top: 10),
-        width: 400,
+        padding: EdgeInsets.only(
+            top: 10,
+        ),
+        // width: 350,
         child: Form(
           key: formKey,
           child: Column(
@@ -39,6 +47,7 @@ class _SignUpFormState extends State<SignUpForm> {
               TextFormField(
                 decoration: InputDecoration(labelText: "First Name"),
                 controller: firstNameController,
+                // initialValue: foundation.kDebugMode ? "Chidi" : "",
                 validator: (value) {
                   String? res = utils.validatorConfirm(
                       [utils.FieldRequiredValidator()], value!);
@@ -48,6 +57,7 @@ class _SignUpFormState extends State<SignUpForm> {
               TextFormField(
                 decoration: InputDecoration(labelText: "Last Name"),
                 controller: lastNameController,
+                // initialValue: foundation.kDebugMode ? "Nnadi" : "",
                 validator: (value) {
                   String? res = utils.validatorConfirm(
                       [utils.FieldRequiredValidator()], value!);
@@ -57,6 +67,7 @@ class _SignUpFormState extends State<SignUpForm> {
               TextFormField(
                 decoration: InputDecoration(labelText: "Email"),
                 controller: emailController,
+                // initialValue: foundation.kDebugMode ? "chidi@gmail.com" : "",
                 validator: (value) {
                   String? res = utils.validatorConfirm(
                       [utils.FieldRequiredValidator(), utils.EmailValidator()],
@@ -76,9 +87,10 @@ class _SignUpFormState extends State<SignUpForm> {
                         });
                       },
                       icon: obscureTextPassword
-                          ? Icon(Icons.security)
-                          : Icon(Icons.remove_red_eye),
+                          ? Icon(Icons.remove_red_eye)
+                          : Icon(Icons.security),
                     )),
+                // initialValue: foundation.kDebugMode ? "chidinnadi" : "",
                 validator: (value) {
                   String? res = utils.validatorConfirm(
                       [utils.FieldRequiredValidator()], value!);
@@ -90,7 +102,6 @@ class _SignUpFormState extends State<SignUpForm> {
               TextFormField(
                 decoration: InputDecoration(
                     labelText: "Confirm Password",
-                    // errorText: ,
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -100,9 +111,10 @@ class _SignUpFormState extends State<SignUpForm> {
                         });
                       },
                       icon: obscureTextConfPassword
-                          ? Icon(Icons.security)
-                          : Icon(Icons.remove_red_eye),
+                          ? Icon(Icons.remove_red_eye)
+                          : Icon(Icons.security),
                     )),
+                // initialValue: foundation.kDebugMode ? "chidinnadi" : "",
                 validator: (value) {
                   String? res = utils.validatorConfirm(
                       [utils.FieldRequiredValidator()], value!);
@@ -124,7 +136,29 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          print("Yes");
+                          SignUpSerializer signUpInstance = SignUpSerializer(
+                            firstName: firstNameController.text,
+                            lastName: lastNameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                          utils.BoolData resp;
+                          signUpInstance.post(exclude: ["id"]).then(
+                              (utils.BoolData value) => {
+                                    if (value.status)
+                                      {
+                                        print("I ran too"),
+                                        Navigator.of(context)
+                                            .pushNamed("/user-dashboard")
+                                      }
+                                    else
+                                      {
+                                        print("I ran"),
+                                        setState(() {
+                                          submitError = true;
+                                        }),
+                                      }
+                                  });
                         }
                       },
                       child: Text(
@@ -132,7 +166,12 @@ class _SignUpFormState extends State<SignUpForm> {
                         style: utils.TextStyles.defaultStyle,
                       ),
                     ),
-                  ))
+                  )),
+              SizedBox(height: 20),
+              submitError
+                  ? StatusWidget(
+                      message: "Sorry Couldn't Sign Up ", error: true)
+                  : SizedBox(),
             ],
           ),
         ),
@@ -147,53 +186,31 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<SignInForm> {
-  bool submit = false;
+  bool submitError = false;
   bool obscureTextPassword = true;
   bool loadNextPage = false;
   late Future<bool> future;
+  bool removeWarning = false;
 
   final formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<bool> getFuture() async {
-    Map res = {
-      "access": "4639307",
-      "refresh": "37595303",
-      "user": {
-        "first_name": "Chidi",
-        "last_name": "Nnadi",
-        "id": "2",
-        "email": "chidi@gmail.com"
-      }
-    };
-    // Simulate Post
-    res = await Future.delayed(Duration(seconds: 1), () => res);
-    if (!res.containsKey("access")) {
-      return false;
-    } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString("access_token", res["access"]);
-      prefs.setString("refresh_token", res["refresh"]);
-      print("I ran");
-      SignUpSerializer signUpInst = SignUpSerializer.json(res["user"]);
-      await signUpInst.savePrefs();
-    }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("save successful: ${prefs.getString('access_token')}");
-    loadNextPage = true;
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Container(
+        padding: EdgeInsets.only(
+          top: 10,
+          left: screenSize.width * 0.25,
+          right: screenSize.width * 0.25,
+        ),
         child: Align(
       alignment: Alignment.topCenter,
       child: Container(
-        padding: EdgeInsets.only(top: 10),
-        width: 400,
+        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+        // width: 350,
         child: Form(
           key: formKey,
           child: Column(
@@ -221,8 +238,8 @@ class _SignInFormState extends State<SignInForm> {
                         });
                       },
                       icon: obscureTextPassword
-                          ? Icon(Icons.security)
-                          : Icon(Icons.remove_red_eye),
+                          ? Icon(Icons.remove_red_eye)
+                          : Icon(Icons.security),
                     )),
                 validator: (value) {
                   String? res = utils.validatorConfirm(
@@ -240,9 +257,28 @@ class _SignInFormState extends State<SignInForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          setState(() {
-                            future = getFuture();
-                          });
+                          SignInSerializer signInInstance = SignInSerializer(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          );
+                          utils.BoolData resp;
+                          signInInstance
+                              .getTokenPair()
+                              .then((utils.BoolData value) => {
+                                    if (value.status)
+                                      {
+                                        print("I ran too"),
+                                        Navigator.of(context)
+                                            .pushNamed("/user-dashboard")
+                                      }
+                                    else
+                                      {
+                                        print("I ran"),
+                                        setState(() {
+                                          submitError = true;
+                                        }),
+                                      }
+                                  });
                         }
                       },
                       child: Text(
@@ -251,6 +287,30 @@ class _SignInFormState extends State<SignInForm> {
                       ),
                     ),
                   )),
+              SizedBox(height: 20),
+              submitError
+                  ? Container(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    submitError = false;
+                                  });
+                                },
+                                icon: Icon(Icons.cancel)),
+                          ),
+                          ),
+                        StatusWidget(
+                            message: "Sorry Couldn't Sign In ", error: true),
+                      ],
+                    ),
+                  )
+                  : SizedBox(),
             ],
           ),
         ),

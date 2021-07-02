@@ -8,7 +8,10 @@ class SignInPage extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widgets.AppBar(context: context).make(),
+      appBar: widgets.AppBar(
+          context: context, title: "Rich Oak", buttonName: "Sign Up",
+          onClick: () { Navigator.of(context).pushNamed("/");}
+      ).make(),
       body: Container(
         // padding: EdgeInsets.only(top: 20, left: ),
         child: Column(

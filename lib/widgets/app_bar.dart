@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:rich_oak_fintech/utils/utils.dart' as utils;
 import 'package:rich_oak_fintech/widgets/auto_size_buttons.dart';
 
-
-
 class AppBar extends utils.CustomWidget {
   BuildContext? context;
-  bool showBox;
-  Color? boxColor;
-  static const Color defaultColor = Colors.black26;
+  final String buttonName;
+  final String title;
+  void Function()? onClick;
 
-  AppBar({required this.context, this.showBox = false, this.boxColor});
+  AppBar(
+      {required this.context,
+      required this.buttonName,
+      required this.title,
+      this.onClick});
 
   @override
   PreferredSize make() {
@@ -33,7 +35,7 @@ class AppBar extends utils.CustomWidget {
                   Icon(Icons.view_headline_rounded),
                   SizedBox(width: 15),
                   Text(
-                    "Rich Oak",
+                    "$title",
                     style: utils.TextStyles.defaultStyle,
                   ),
                 ],
@@ -47,10 +49,12 @@ class AppBar extends utils.CustomWidget {
                   AutoSizeTransparentButton(
                     widthAndHeight: Size.fromWidth(100),
                     padding: 9,
-                    buttonName: "Sign In",
-                    onTapFunction: () {
-                      Navigator.of(context!).pushNamed("/sign-in-page");
-                    },
+                    buttonName: "$buttonName",
+                    onTapFunction: onClick == null
+                        ? () {
+                            Navigator.of(context!).pushNamed("/sign-in-page");
+                          }
+                        : onClick,
                   ),
                 ],
               ),
@@ -60,7 +64,4 @@ class AppBar extends utils.CustomWidget {
       ),
     );
   }
-
-
-
 }

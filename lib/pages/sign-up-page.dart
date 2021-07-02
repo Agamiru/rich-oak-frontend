@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:rich_oak_fintech/widgets/widgets.dart' as widgets;
 import 'package:rich_oak_fintech/utils/utils.dart' as utils;
@@ -6,7 +6,9 @@ import 'package:rich_oak_fintech/utils/utils.dart' as utils;
 class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widgets.AppBar(context: context).make(),
+      appBar: widgets.AppBar(
+          context: context, buttonName: "Sign In", title: "Rick Oak"
+      ).make(),
       body: Container(
         // padding: EdgeInsets.only(top: 20, left: ),
         child: Column(

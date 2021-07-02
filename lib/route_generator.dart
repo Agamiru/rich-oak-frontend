@@ -11,6 +11,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => pages.SignUpPage());
       case "/sign-in-page":
         return MaterialPageRoute(builder: (_) => pages.SignInPage());
+      case "/user-dashboard":
+        return MaterialPageRoute(builder: (_) => pages.UserDashboardPage());
       default:
         return _errorRoute();
     }

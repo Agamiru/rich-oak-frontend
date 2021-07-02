@@ -12,3 +12,11 @@ abstract class CustomWidget {
 
   Widget make();
 }
+
+
+class BoolData {
+  bool status;
+  Object? data;
+
+  BoolData({required this.status, this.data});
+}
