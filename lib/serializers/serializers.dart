@@ -106,6 +106,7 @@ class UserSerializer {
     //   url = Uri.parse(userEndpoint);
     // }
     url = Uri.parse(userEndpoint);
+
     Map<String, dynamic>? respBody;
     // Make Request
     try {
@@ -193,6 +194,7 @@ class SignUpSerializer {
     //   url = Uri.parse(signUpEndpoint);
     // }
     url = Uri.parse(signUpEndpoint);
+    print("Endpoint: ${url.toString()}");
     Map<String, dynamic>? respBody;
     // Make Request
     try {
