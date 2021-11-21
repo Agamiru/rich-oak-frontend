@@ -1,5 +1,5 @@
 # rich_oak_fintech
 
-A Flutter web application frontend for rich-oak-test
+A simple sign-up/login frontend for rich-oak-test (backend).
 
 url: https://rich-oak-app.codemagic.app/
